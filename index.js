@@ -24,6 +24,7 @@ async function run(){
 try{
 const appointmentsCollection= client.db('Derma').collection('appointments')
 const bookingsCollection= client.db('Derma').collection('bookings')
+const userCollection= client.db('Derma').collection('users')
 
 app.get('/appointmentOptions' , async(req,res)=> {
 const query={};
@@ -48,7 +49,7 @@ res.send(options)
 
 app.post('/bookings',async(req,res)=>{
   const booking = req.body;
-console.log(booking);
+// console.log(booking);
 const query={
   email:booking.email,
   selectedDate:booking.selectedDate,
@@ -65,6 +66,20 @@ return res.send({acknowledged:false,message})
   res.send(result);
 })
 
+app.get('/bookings', async(req,res)=>{
+
+  const email = req.query.email;
+  const query= {email:email};
+  const bookings = await bookingsCollection.find(query).toArray();
+  // console.log(bookings)
+  res.send(bookings);
+});
+
+app.post('/users',async(req,res)=>{
+  const user=req.body;
+  const result = await userCollection.insertOne(user);
+  res.send(result)
+})
 }
 finally{
 
